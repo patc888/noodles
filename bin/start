@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# Get location of start script
+CMDDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+if [ ! -f $CMDDIR/../api_keys.json ];
+then
+  cp $CMDDIR/api_keys.json.sample $CMDDIR/../api_keys.json
+fi
+
+echo $CMDDIR
+PATH=$PATH:$CMDDIR
+export NODE_PATH=$CMDDIR/node_modules
+nodemon $CMDDIR/server.js
+
+
+

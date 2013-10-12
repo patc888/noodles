@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css"/>
+    <link rel="stylesheet" href="http://purecss.io/combo/1.6.3?/css/main.css&/css/grids.css&/css/rainbow/baby-blue.css"/>
+    <link rel="stylesheet" href="index.css"/>
+    <script src="http://yui.yahooapis.com/3.13.0/build/yui/yui-min.js"></script>
+
+    <style type='text/css'>  
+      #results{ border: 1px solid gray; padding: 10px; height: 400; overflow: auto; }
+    </style>
+
+    <script type='text/javascript'>
+      function showTopStories(data){
+        var output = '';
+        var items = data.query.results.item;
+        for (var i=0; i<items.length; i++) {
+          output += "<h3><a href='" + items[i].link + "'>"
+            + items[i].title + "</a></h3>" + items[i].description + " (" + items[i].source.content + ")<hr/>";      
+        }
+        document.getElementById('results').innerHTML = output;
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="header">
+      <h1>news_1</h1>
+    </div>
+    <div class="content">
+      <p>
+        Shows top stories from an rss feed. In this example, YUI is used to execute a YQL query to fetch the top stories.
+        The executed YQL query is 
+        <pre class="snippet"><code>select * from rss where url="http://rss.news.yahoo.com/rss/topstories"</code> <a href="http://developer.yahoo.com/yql/console/#h=select+*+from+rss+where+url%3D%22http%3A%2F%2Frss.news.yahoo.com%2Frss%2Ftopstories%22">[view]</a></pre>
+      </p>
+
+      <!-- This element will be filled with the results -->
+      <div id='results'></div>
+    </div>
+
+    <!-- Execute query and display the results -->
+    <script>
+      YUI().use('yql', function(Y) {
+        Y.YQL('select * from rss where url="http://rss.news.yahoo.com/rss/topstories"', showTopStories);
+      });
+    </script>
+  </body>
+</html>

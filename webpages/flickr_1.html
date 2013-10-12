@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css"/>
+    <link rel="stylesheet" href="http://purecss.io/combo/1.6.3?/css/main.css&/css/grids.css&/css/rainbow/baby-blue.css"/>
+    <link rel="stylesheet" href="index.css"/>
+    <script src="http://yui.yahooapis.com/3.13.0/build/yui/yui-min.js"></script>
+
+    <script>
+      function showPictures(data) {
+        var output = '';    
+        var photos = data.results.photo;
+        for (var i=0; i<photos.length; i++) {
+          output += "<h3>" + photos[i].title + "</h3>"
+            + "<img src='http://farm" + photos[i].farm + ".static.flickr.com/" 
+            + photos[i].server + "/" + photos[i].id + "_" + photos[i].secret +"_m.jpg'>";
+        }
+        document.getElementById('results').innerHTML = output;
+      }
+
+      <!-- Called when the user clicks on the submit button -->
+      function onSubmit(e) {
+        e.preventDefault(); // do not send off form 
+        var query = document.getElementById('query').value || 'SFO';
+
+        <!-- Call a REST api -->
+        YUI().use('io', 'json-parse', function(Y) {
+          Y.io('apis/flickr_1/' + encodeURIComponent(query), {
+            on: { 
+              success: function(tx, reply) {
+                showPictures(Y.JSON.parse(reply.responseText));
+              } 
+            }
+          });
+        });
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="header">
+      <h1>flickr_1</h1>
+    </div>
+    <div class="content">
+      <p>
+        This example takes a query (e.g. horse or rainbow) and shows images that have been tagged with
+        search terms. The code uses YUI to call the following REST api to get the photos.
+        An API key is needed to use the flickr APIs. You can request a key
+        <a href="http://www.flickr.com/services/apps/create/apply">here</a>.
+        Add your key to the 'api_keys.json' file in order to enable this webpage to work.
+        <pre class="snippet"><code>apis/flickr_1/:query</code></pre>
+      </p>
+
+      <form id="form">
+        <p><label for="query">Query: </label><input id="query" type="text"/></p>
+        <p><input type="submit" value="Search"/></p>
+      </form>
+
+      <!-- This element will be filled with the results -->
+      <div id="results"></div>
+    </div>
+
+    <script>
+      // Create an event handler for submitting the form
+      var form = document.getElementById('form');
+      form.addEventListener('submit',onSubmit,false);
+    </script>
+  </body>
+</html>
