@@ -1,17 +1,20 @@
 noodles
 =======
 
-Noodles is node.js container designed to jumpstart a 24-hour hack day
+Noodles is a node.js container designed to jumpstart a 24-hour hack day
 project. It contains many fully working code samples for retrieving
 and presenting data from popular sites. The code is organized in a way
 to make it easy to copy, paste, mash, and modify for use in your hack.
 
 ## Installation
 
-    % git clone git@github.com:patc888/noodles.git
-    % ./noodles/bin/start
+1. Visit [nodejs.org](nodejs.org/download) and install node.js.
+2. Download noodles and start it up:
 
-  Point your browser to [localhost:3000](localhost:3000) and you're up and running.
+        % git clone git@github.com:patc888/noodles.git
+        % ./noodles/bin/start
+
+3. Point your browser to [localhost:3000](localhost:3000) and you're up and running.
 
 ## Creating a webpage
 
