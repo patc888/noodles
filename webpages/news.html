@@ -8,7 +8,7 @@
     <script src="http://yui.yahooapis.com/3.13.0/build/yui/yui-min.js"></script>
 
     <style type='text/css'>  
-      #results{ border: 1px solid gray; padding: 10px; height: 400; overflow: auto; }
+      #results{ border: 1px solid gray; padding: 10px; overflow: auto; }
     </style>
 
     <script type='text/javascript'>
@@ -26,13 +26,14 @@
 
   <body>
     <div class="header">
-      <h1>news_1</h1>
+      <h1>news</h1>
     </div>
     <div class="content">
       <p>
-        Shows top stories from an rss feed. In this example, YUI is used to execute a YQL query to fetch the top stories.
-        The executed YQL query is 
-        <pre class="snippet"><code>select * from rss where url="http://rss.news.yahoo.com/rss/topstories"</code> <a href="http://developer.yahoo.com/yql/console/#h=select+*+from+rss+where+url%3D%22http%3A%2F%2Frss.news.yahoo.com%2Frss%2Ftopstories%22">[view]</a></pre>
+        Shows top stories from an rss feed. In this example, YUI is used to execute the following YQL query to fetch the top stories.
+        [<a href="apis/source?file=webpages/news.html">view source</a>]
+        <pre class="snippet"><code>select * from rss where url="http://rss.news.yahoo.com/rss/topstories"</code>
+[<a href="http://developer.yahoo.com/yql/console/#h=select+*+from+rss+where+url%3D%22http%3A%2F%2Frss.news.yahoo.com%2Frss%2Ftopstories%22">view sample results</a>]</pre>
       </p>
 
       <!-- This element will be filled with the results -->

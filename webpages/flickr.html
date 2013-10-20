@@ -23,11 +23,11 @@
       <!-- Called when the user clicks on the submit button -->
       function onSubmit(e) {
         e.preventDefault(); // do not send off form 
-        var query = document.getElementById('query').value || 'SFO';
+        var query = document.getElementById('query').value;
 
         <!-- Call a REST api -->
         YUI().use('io', 'json-parse', function(Y) {
-          Y.io('apis/flickr_1/' + encodeURIComponent(query), {
+          Y.io('apis/flickr/' + encodeURIComponent(query), {
             on: { 
               success: function(tx, reply) {
                 showPictures(Y.JSON.parse(reply.responseText));
@@ -41,21 +41,22 @@
 
   <body>
     <div class="header">
-      <h1>flickr_1</h1>
+      <h1>flickr</h1>
     </div>
     <div class="content">
       <p>
-        This example takes a query (e.g. horse or rainbow) and shows images that have been tagged with
+        This example takes a string and shows images that have been tagged with
         search terms. The code uses YUI to call the following REST api to get the photos.
         An API key is needed to use the flickr APIs. You can request a key
-        <a href="http://www.flickr.com/services/apps/create/apply">here</a>.
-        Add your key to the 'api_keys.json' file in order to enable this webpage to work.
-        <pre class="snippet"><code>apis/flickr_1/:query</code></pre>
+        <a href="http://www.flickr.com/services/api/misc.api_keys.html">here</a>.
+        Add your key to the 'api_keys.json' file in order to enable the REST api to work.
+        [<a href="apis/source?file=webpages/flickr.html">view source</a>]
+        <pre class="snippet"><code>apis/flickr/:string</code></pre>
       </p>
 
       <form id="form">
-        <p><label for="query">Query: </label><input id="query" type="text"/></p>
-        <p><input type="submit" value="Search"/></p>
+        <p><input id="query" type="text" value="cat"/>
+        <input type="submit" value="Search"/></p>
       </form>
 
       <!-- This element will be filled with the results -->

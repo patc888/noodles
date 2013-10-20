@@ -30,7 +30,15 @@
         <tbody>
           <tr>
             <td>
-              <a href="news_1.html">news_1</a>
+              <a href="rest.html">rest</a>
+            </td>
+            <td>
+              Demonstrates how to make calls to all four kinds of REST methods - GET, POST, PUT, and DELETE.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="news.html">news</a>
             </td>
             <td>
               Shows top stories from an rss new feed.
@@ -38,15 +46,7 @@
           </tr>
           <tr>
             <td>
-              <a href="flickr_1.html">flickr_1</a>
-            </td>
-            <td>
-              Shows images whose tags match a search term.
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <a href="geoplace_1.html">geoplace_1</a>
+              <a href="geoplace.html">geoplace</a>
             </td>
             <td>
               Shows information about a location. E.g. "Palo Alto" or "SFO".
@@ -54,10 +54,19 @@
           </tr>
           <tr>
             <td>
-              <a href="maps_1.html">maps_1</a>
+              <a href="maps.html">maps</a>
             </td>
             <td>
               Shows the location of a place (e.g. "SFO" or "Palo Alto") on a Google map.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="flickr.html">flickr</a>
+            </td>
+            <td>
+              Shows images whose tags match a search term. 
+              Note: requires that a flickr api key be set in the api_keys.dat file.
             </td>
           </tr>
         </tbody>
@@ -65,7 +74,7 @@
 
       <h2 class="content-subhead">REST APIs</h2>
       <p>
-        List of REST apis that demonstrate how to retrieve information from many popular sources.
+        Some simple examples of how to implement a REST call to support mobile apps.
       </p>
       <table class="pure-table pure-table-bordered">
         <thead>
@@ -77,18 +86,28 @@
         <tbody>
           <tr>
             <td>
-              <a href="apis/flickr_1/Palo+Alto">flickr_1</a>
+              <a href="apis/rest/ant/bat">rest</a>
             </td>
             <td>
-              Searches flickr for photos. Requires an API key.
+              Demonstrates how to handle all four types of REST calls - GET, POST, PUT, and DELETE.
             </td>
           </tr>
           <tr>
             <td>
-              <a href="apis/geoplace_1/Palo+Alto">geoplace_1</a>
+              <a href="apis/geoplace/Palo+Alto">geoplace</a>
             </td>
             <td>
-              Shows geo information about a location. E.g. "Palo Alto" or "SFO".
+              Shows geo information about a location. E.g. "Palo Alto" or "SFO". 
+              Demonstrates how to make a YQL call in the backend.
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <a href="apis/flickr/Palo+Alto">flickr</a>
+            </td>
+            <td>
+              Searches flickr for photos. 
+              Demonstrates how to use a flickr API key that's stored behind the REST API.
             </td>
           </tr>
         </tbody>

@@ -38,13 +38,13 @@
 
       <!-- Called when the user clicks on the Submit button -->
       function onSubmit(e) {
-        e.preventDefault(); // do not send off form 
-        var location = document.getElementById('query').value || 'SFO';
+        e.preventDefault(); // do not send form 
+        var location = document.getElementById('query').value;
         var content = '';
 
         <!-- Call a REST api -->
         YUI().use('io', 'json-parse', function(Y) {
-          Y.io('apis/geoplace_1/' + encodeURIComponent(location), {
+          Y.io('apis/geoplace/' + encodeURIComponent(location), {
             on: { 
               success: function(tx, reply) {
                 showLocation(Y.JSON.parse(reply.responseText));
@@ -58,22 +58,22 @@
 
   <body>
     <div class="header">
-      <h1>geoplace_1</h1>
+      <h1>geoplace</h1>
     </div>
     <div class="content">
       <p>
-        This example takes a name of a location (e.g. San Francisco or SFO) and shows its location.
-        The code uses jquery to call the following REST api to get the location information.
-        <pre class="snippet"><code>apis/geoplace_1/:location</code> <a href="apis/geoplace_1/Palo+Alto">[view]</a></pre>
+        This example takes a name of a location (e.g. San Francisco or SFO) and shows details about that location.
+        The code uses YUI to call the following REST api to get the location information.
+        [<a href="apis/source?file=webpages/rest.html">view source</a>]
+        <pre class="snippet"><code>apis/geoplace/:location</code>
+[<a href="apis/geoplace/Palo+Alto">view sample results</a>]</pre>
       </p>
 
       <form id="form">
         <p>
-          <label for="query">Enter Location:</label>
-          <input id="query" type="text"/>
-        </p>
-        <p>
-          <input type="submit" value="Find"/>
+          <label for="query">Location:</label>
+          <input id="query" type="text" value="palo alto"/>
+          <input type="submit" value="Show"/>
         </p>
       </form>
 
