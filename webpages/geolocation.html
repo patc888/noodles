@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css"/>
+    <link rel="stylesheet" href="http://purecss.io/combo/1.6.3?/css/main.css&/css/grids.css&/css/rainbow/baby-blue.css"/>
+    <link rel="stylesheet" href="index.css"/>
+  </head>
+
+  <body>
+    <div class="header">
+      <h1>geolocation</h1>
+    </div>
+    <div class="content">
+      <p>
+        Shows the location of this device.
+        [<a href="apis/source?file=webpages/geolocation.html">view source</a>]
+      </p>
+
+      <!-- These element will be filled with the results -->
+      Latitude: <span id='results_lat'></span>
+      <br>
+      Longitude: <span id='results_lon'></span>
+    </div>
+
+    <!-- Execute query and display the results -->
+    <script>
+      navigator.geolocation.watchPosition(function (position) {
+        document.getElementById("results_lat").innerHTML = position.coords.latitude;
+        document.getElementById("results_lon").innerHTML = position.coords.longitude;
+      });
+    </script>
+  </body>
+</html>
