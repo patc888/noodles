@@ -1,7 +1,7 @@
 // ----------------- Routes --------------------
 
 module.exports = function(app) {
-  app.get('/apis/geoplace_1/:location', getLocations);
+  app.get('/apis/geoplace/:location', getLocations);
 };
 
 // ----------------- Handlers -------------------------

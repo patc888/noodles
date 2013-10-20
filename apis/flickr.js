@@ -1,7 +1,7 @@
 // ----------------- Routes --------------------
 
 module.exports = function(app) {
-  app.get('/apis/flickr_1/:query', findPhotos);
+  app.get('/apis/flickr/:query', findPhotos);
 };
 
 // ----------------- Handlers -------------------------

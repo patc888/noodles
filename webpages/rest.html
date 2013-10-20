@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css"/>
+    <link rel="stylesheet" href="http://purecss.io/combo/1.6.3?/css/main.css&/css/grids.css&/css/rainbow/baby-blue.css"/>
+    <link rel="stylesheet" href="index.css"/>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script src="http://yui.yahooapis.com/3.13.0/build/yui/yui-min.js"></script>
+
+    <!-- Sets the bounds of the map -->
+    <style type='text/css'>  
+      .response{ border: 1px solid gray; padding: 10px; width: 80%; overflow: auto; white-space: pre; }
+    </style>
+
+    <script>
+      function setContent(id, content) {
+        var container = document.getElementById(id);
+        container.innerHTML = content;
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="header">
+      <h1>rest</h1>
+    </div>
+    <div class="content">
+      <p>
+        This example demonstrates how to make all four kinds of REST calls - GET, POST, PUT, and DELETE.
+      </p>
+
+      <p>
+        An example of a REST GET call:
+        <pre class="snippet"><code>GET apis/rest/ant/bat?p3=cat&p4=dog</code></pre>
+      </p>
+      <div id="results_get" class="response"></div>
+      <script>
+        YUI().use('io', 'json-parse', function(Y) {
+          Y.io('apis/rest/ant/bat?p3=cat&p4=dog', {
+            on: { 
+              success: function(tx, reply) {
+                setContent('results_get', reply.responseText);
+              } 
+            }
+          });
+        });
+      </script>
+
+      <p>
+        An example of a REST POST call:
+        <pre class="snippet"><code>POST apis/rest/ant/bat?p3=cat&p4=dog</code></pre>
+      </p>
+      <div id="results_post" class="response"></div>
+      <script>
+        YUI().use('io', 'json-parse', function(Y) {
+          Y.io('apis/rest/ant/bat?p3=cat&p4=dog', {
+            method: 'POST',
+            data: 'p5=eel&p6=fox',
+            on: { 
+              success: function(tx, reply) {
+                setContent('results_post', reply.responseText);
+              } 
+            }
+          });
+        });
+      </script>
+
+      <p>
+        An example of a REST PUT call:
+        <pre class="snippet"><code>PUT apis/rest/ant/bat?p3=cat&p4=dog</code></pre>
+      </p>
+      <div id="results_put" class="response"></div>
+      <script>
+        YUI().use('io', 'json-parse', function(Y) {
+          Y.io('apis/rest/ant/bat?p3=cat&p4=dog', {
+            method: 'PUT',
+            data: 'p5=eel&p6=fox',
+            on: { 
+              success: function(tx, reply) {
+                setContent('results_put', reply.responseText);
+              } 
+            }
+          });
+        });
+      </script>
+
+      <p>
+        An example of a REST DELETE call:
+        <pre class="snippet"><code>PUT apis/rest/ant/bat?p3=cat&p4=dog</code></pre>
+      </p>
+      <div id="results_delete" class="response"></div>
+      <script>
+        YUI().use('io', 'json-parse', function(Y) {
+          Y.io('apis/rest/ant/bat?p3=cat&p4=dog', {
+            method: 'DELETE',
+            data: 'p5=eel&p6=fox',
+            on: { 
+              success: function(tx, reply) {
+                setContent('results_delete', reply.responseText);
+              } 
+            }
+          });
+        });
+      </script>
+    </div>
+  </body>
+</html>
