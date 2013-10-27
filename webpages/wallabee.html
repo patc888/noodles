@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css"/>
+    <link rel="stylesheet" href="http://purecss.io/combo/1.6.3?/css/main.css&/css/grids.css&/css/rainbow/baby-blue.css"/>
+    <link rel="stylesheet" href="index.css"/>
+    <script src="http://yui.yahooapis.com/3.13.0/build/yui/yui-min.js"></script>
+
+    <script>
+      function showItems(items) {
+        var output = '';    
+         for (var key in items) {
+           if (items[key].cur_number >= 1000 && items[key].lo_number < 1000) {
+             output += '<img src="' + items[key].image_url + '"/> '
+               + items[key].name + " (" + items[key].cur_number + " -> " 
+               + items[key].lo_number + ") $" + items[key].cost + "<br>";
+           }
+         }
+         output += "<hr/>";
+         for (var key in items) {
+           if (items[key].cost <= 5000 && items[key].cur_number < 1000) {
+             output += '<img src="' + items[key].image_url + '"/> '
+               + items[key].name + " (" + items[key].cur_number + " -> " 
+               + items[key].lo_number + ") $" + items[key].cost + "<br>";
+           }
+         }
+
+/*
+        for (var i=0; i<items.length; i++) {
+          output += "<h3>" + photos[i].title + "</h3>"
+            + "<img src='http://farm" + items[i].farm + ".static.flickr.com/" 
+            + photos[i].server + "/" + items[i].id + "_" + photos[i].secret +"_m.jpg'>";
+        }
+*/
+        document.getElementById('results').innerHTML = output;
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="header">
+      <h1>wallabee</h1>
+    </div>
+    <div class="content">
+      <p>
+        This example makes a REST call to the backend and displays the results.
+        The backend code demonstrates how to make concurrent REST calls and then merge
+        the results.
+        An API key is needed to use the wallabee APIs. You can request a key
+        <a href="http://wallab.ee/developers/keys">here</a>.
+        Add your key to the 'api_keys.json' file in order to enable the REST api to work.
+        [<a href="apis/source?file=webpages/wallabee.html">view source</a>]
+        <pre class="snippet"><code>apis/wallabee/users/:user_id/find_lower</code></pre>
+      </p>
+
+      <!-- This element will be filled with the results -->
+      <div id="results"></div>
+    </div>
+
+    <script>
+      <!-- Call the REST api -->
+      YUI().use('io', 'json-parse', function(Y) {
+        Y.io('apis/wallabee/users/5601/find_lower', {
+          on: { 
+            success: function(tx, reply) {
+              showItems(Y.JSON.parse(reply.responseText));
+            } 
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
