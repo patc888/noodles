@@ -3,9 +3,9 @@
 # Get location of start script
 CMDDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-if [ ! -f $CMDDIR/../api_keys.json ];
+if [ ! -f $CMDDIR/../api_keys ];
 then
-  cp $CMDDIR/api_keys.json.sample $CMDDIR/../api_keys.json
+  cp $CMDDIR/api_keys.sample $CMDDIR/../api_keys
 fi
 
 echo $CMDDIR

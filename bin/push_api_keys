@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Get location of script
+CMDDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+while read line
+do
+  if [[ ! $line =~ \s*#.* ]] && [ -n "$line" ] ; then
+    set -- "$line"
+    IFS=" "; declare -a Array=($*) 
+    cmd="heroku config:set API_KEY_${Array[0]}=${Array[1]}"
+    eval $cmd
+  fi
+done < $CMDDIR/../api_keys

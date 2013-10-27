@@ -1,0 +1,6 @@
+# Some websites require an API key in order to access their APIs.
+# Once you obtain the key, add it to this file and it will be used by the example code.
+
+flickr     abc-123-def
+twitter    sf32344344
+example    ax-34-dfd

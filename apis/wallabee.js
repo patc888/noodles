@@ -128,11 +128,13 @@ findLower = function(request, reply) {
   });
 };
 
-
 function getApiKey(name) {
-  var fs = require('fs');
-  var str = fs.readFileSync(__dirname + "/../api_keys.json").toString();
-  var data = eval('(' + str + ')');
-  return data[name];
+  var lines = require('fs').readFileSync(__dirname+'/../api_keys').toString().split(/\r?\n/);
+  for (var i in lines) {
+    var parts = lines[i].split(/\s+/);
+    if (parts[0] === name && !lines[i].match(/^\s*(#.*)?$/)) {
+      return parts[1];
+    }
+  }
+  return process.env['API_KEY_'+name];
 }
-
