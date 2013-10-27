@@ -2,11 +2,45 @@
 
 module.exports = function(app) {
   app.get('/apis/wallabee/users/:user_id/find_lower', findLower);
+  app.get('/apis/wallabee/users/:user_id/average', average);
 };
 
 // ----------------- Handlers -------------------------
 
 var YUI = require('yui').YUI;
+
+average = function(request, reply) {
+  var userId = request.params.user_id;
+
+  // Get the api key
+  var api_key = getApiKey('wallabee');
+  if (!api_key) {
+    reply.status(500).send('Missing API key');
+    return;
+  }
+
+  YUI().use('io-base', 'json-parse', 'promise', function(Y) {
+    // Retrieve's the user's saved items and computes the average item number
+    Y.io('http://api.wallab.ee/users/' + userId + '/saveditems', {
+      headers: {
+        'X-WallaBee-API-Key': api_key,
+      },
+      on: {
+        success: function(tx, r) {
+          var obj = JSON.parse(r.responseText).saveditems;
+          var total = 0;
+          var count = 0;
+          for (var key in obj) {
+            total += parseInt(obj[key].number);
+            count++;
+          }
+          reply.type('text/plain');
+          reply.send('' + (total / count));
+        } 
+      }
+    });
+  });
+};
 
 findLower = function(request, reply) {
   var userId = request.params.user_id;
@@ -91,15 +125,16 @@ findLower = function(request, reply) {
 
               // Sort the items by cost
               items.sort(function (a, b) {
-                  if (a.cost > b.cost)
-                    return 1;
-                  if (a.cost < b.cost)
-                    return -1;
-                  // a must be equal to b
-                  return 0;
+                if (a.cost > b.cost) {
+                  return 1;
+                } else if (a.cost < b.cost) {
+                  return -1;
+                }
+                // The greater gain should be first
+                return (b.cur_number - b.lo_number) - (a.cur_number - a.lo_number);
               });
               resolve(items);
-            } 
+            }
           }
         });
       });
