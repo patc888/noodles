@@ -1,7 +1,7 @@
 // ----------------- Routes --------------------
 
 module.exports = function(app) {
-  app.get('/apis/wallabee/find_lower', findLower);
+  app.get('/apis/wallabee/users/:user_id/find_lower', findLower);
 };
 
 // ----------------- Handlers -------------------------
@@ -9,6 +9,8 @@ module.exports = function(app) {
 var YUI = require('yui').YUI;
 
 findLower = function(request, reply) {
+  var userId = request.params.user_id;
+
   // Get the api key
   var api_key = getApiKey('wallabee');
   if (!api_key) {
@@ -20,11 +22,11 @@ findLower = function(request, reply) {
     // Retrieve's the user's saved items.
     // Resolves a map of item_type_id -> number.
     var savedItemsP = new Y.Promise(function (resolve, reject) {
-      Y.io('http://api.wallab.ee/users/5601/saveditems', {
+      Y.io('http://api.wallab.ee/users/' + userId + '/saveditems', {
         headers: {
           'X-WallaBee-API-Key': api_key,
         },
-        on: { 
+        on: {
           success: function(tx, r) {
             var obj = JSON.parse(r.responseText).saveditems;
             var items = new Object();
@@ -51,7 +53,7 @@ findLower = function(request, reply) {
             for (var key in obj) {
               itemType = obj[key].item_type_id;
               if (!items[itemType] 
-                    || parseInt(obj[key].number) < items[itemType].lo_number) {
+                  || parseInt(obj[key].number) < items[itemType].lo_number) {
                 items[itemType] = { "lo_number": parseInt(obj[key].number),
                                     "cost": parseInt(obj[key].cost) };
               }
@@ -63,10 +65,11 @@ findLower = function(request, reply) {
     });
 
     // Retrieves the item type names.
-    // Resolves a map of item_type_id -> { lo_number, image_url, name, cur_number }.
-    function getItemTypeNamesP(items) {
+    // Resolves an array of { item_type_id, lo_number, image_url, name, cur_number }
+    // sorted by cost.
+    function getItemTypeNamesP(marketItems) {
       var ids = new Array();
-      for (var key in items) {
+      for (var key in marketItems) {
         ids.push(key);
       }
       return new Y.Promise(function (resolve, reject) {
@@ -76,13 +79,25 @@ findLower = function(request, reply) {
           },
           on: { 
             success: function(tx, r) {
+              var items = new Array();
               var obj = JSON.parse(r.responseText);
-              var names = new Object();
               for (var key in obj) {
                 var itemTypeId = obj[key].item_type_id;
-                items[itemTypeId].name = obj[key].name;
-                items[itemTypeId].image_url = obj[key].image_url_50;
+                marketItems[itemTypeId].name = obj[key].name;
+                marketItems[itemTypeId].image_url = obj[key].image_url_50;
+                marketItems[itemTypeId].item_type_id = itemTypeId;
+                items.push(marketItems[itemTypeId]);
               }
+
+              // Sort the items by cost
+              items.sort(function (a, b) {
+                  if (a.cost > b.cost)
+                    return 1;
+                  if (a.cost < b.cost)
+                    return -1;
+                  // a must be equal to b
+                  return 0;
+              });
               resolve(items);
             } 
           }
@@ -90,43 +105,26 @@ findLower = function(request, reply) {
       });
     }
 
-    Y.batch(savedItemsP, marketItemsP)
-      .then(function(data) {
-         var savedItems = data[0];
-         var marketItems = data[1];
+    Y.batch(savedItemsP, marketItemsP).then(function(data) {
+      var savedItems = data[0];
+      var marketItems = data[1];
 
-         // For each market item, if number is not smaller, remove it
-         for (var key in marketItems) {
-           var number = savedItems[key];
-           marketItems[key].cur_number = number;
-           if (!number || number < marketItems[key].lo_number
-                || marketItems[key].cost > 5000) {
-             delete marketItems[key];
-           }
-         }
+      // For each market item, if number is not smaller, remove it
+      for (var key in marketItems) {
+        var number = savedItems[key];
+        // Add the user's current number
+        marketItems[key].cur_number = number;
+        if (!number || number < marketItems[key].lo_number) {
+          delete marketItems[key];
+        }
+      }
 
-         // Get the item type names and then display them
-         getItemTypeNamesP(marketItems).then(function(items) {
-           reply.type('text/html');
-           var output = '';
-           for (var key in items) {
-             if (items[key].cur_number >= 1000 && items[key].lo_number < 1000) {
-               output += '<img src="' + items[key].image_url + '"/> '
-                 + items[key].name + " (" + items[key].cur_number + " -> " 
-                 + items[key].lo_number + ") $" + items[key].cost + "<br>";
-             }
-           }
-           output += "<hr/>";
-           for (var key in items) {
-             if (items[key].cost <= 5000 && items[key].cur_number < 1000) {
-               output += '<img src="' + items[key].image_url + '"/> '
-                 + items[key].name + " (" + items[key].cur_number + " -> " 
-                 + items[key].lo_number + ") $" + items[key].cost + "<br>";
-             }
-           }
-           reply.write(output);
-         });
+      // Get the item type names and then display them
+      getItemTypeNamesP(marketItems).then(function(items) {
+        reply.type('application/json');
+        reply.json(items);
       });
+    });
   });
 };
 
