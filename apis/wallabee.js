@@ -74,7 +74,7 @@ findLower = function(request, reply) {
     });
 
     // Retrieves all items in the market.
-    // Resolves a map of item_type_id -> { lo_number, cost } 
+    // Resolves a map of item_type_id -> { number, cost } 
     var marketItemsP = new Y.Promise(function (resolve, reject) {
       Y.io('http://api.wallab.ee/market', {
         headers: {
@@ -86,10 +86,22 @@ findLower = function(request, reply) {
             var items = new Object();
             for (var key in obj) {
               itemType = obj[key].item_type_id;
-              if (!items[itemType] 
-                  || parseInt(obj[key].number) < items[itemType].lo_number) {
-                items[itemType] = { "lo_number": parseInt(obj[key].number),
-                                    "cost": parseInt(obj[key].cost) };
+              var num = parseInt(obj[key].number);
+              var cost = parseInt(obj[key].cost);
+              if (!items[itemType]) {
+                items[itemType] = { "number": num, "cost": cost };
+              } else if (num < items[itemType].number) {
+                var n = items[itemType].number;
+                var c = items[itemType].cost;
+                items[itemType].number = num;
+                items[itemType].cost = cost;
+                num = n;
+                cost = c;
+              }
+              if (num > items[itemType].number
+                  && (!items[itemType].nx_number || num < items[itemType].nx_number)) {
+                items[itemType].nx_number = num;
+                items[itemType].nx_cost = cost;
               }
             }
             resolve(items);
@@ -99,7 +111,7 @@ findLower = function(request, reply) {
     });
 
     // Retrieves the item type names.
-    // Resolves an array of { item_type_id, lo_number, image_url, name, cur_number }
+    // Resolves an array of { item_type_id, number, image_url, name, cur_number }
     // sorted by cost.
     function getItemTypeNamesP(marketItems) {
       var ids = new Array();
@@ -131,7 +143,7 @@ findLower = function(request, reply) {
                   return -1;
                 }
                 // The greater gain should be first
-                return (b.cur_number - b.lo_number) - (a.cur_number - a.lo_number);
+                return a.number - b.number;
               });
               resolve(items);
             }
@@ -149,7 +161,7 @@ findLower = function(request, reply) {
         var number = savedItems[key];
         // Add the user's current number
         marketItems[key].cur_number = number;
-        if (!number || number < marketItems[key].lo_number) {
+        if (!number || number < marketItems[key].number) {
           delete marketItems[key];
         }
       }

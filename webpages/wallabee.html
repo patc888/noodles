@@ -9,23 +9,31 @@
     <script src="http://yui.yahooapis.com/3.13.0/build/yui/yui-min.js"></script>
 
     <script>
+      function format(item) {
+        var nx = " --- <b>X</b>";
+        if (item.nx_number && item.nx_number >= 1000) {
+          nx = " --- <b>[" + item.nx_number + " $" + item.nx_cost + "]</b>";
+        } else if (item.nx_number) {
+          nx = "";
+        }
+        return '<img src="' + item.image_url + '"/> '
+          + item.name + " (" + item.cur_number + " -> " 
+          + item.number + ") $" + item.cost 
+          + nx + "<br/>";
+      }
       function showItems(items) {
         var output = '';    
         // Show items >= 1000
         for (var key in items) {
-          if (items[key].cur_number >= 1000 && items[key].lo_number < 1000) {
-            output += '<img src="' + items[key].image_url + '"/> '
-              + items[key].name + " (" + items[key].cur_number + " -> " 
-              + items[key].lo_number + ") $" + items[key].cost + "<br>";
+          if (items[key].cur_number >= 1000 && items[key].number < 1000) {
+            output += format(items[key]);
           }
         }
         output += "<hr/>";
         // Show items < 1000
         for (var key in items) {
           if (items[key].cur_number < 1000) {
-            output += '<img src="' + items[key].image_url + '"/> '
-              + items[key].name + " (" + items[key].cur_number + " -> " 
-              + items[key].lo_number + ") $" + items[key].cost + "<br>";
+            output += format(items[key]);
           }
         }
         document.getElementById('results').innerHTML = output;
@@ -44,7 +52,7 @@
         the results.
         An API key is needed to use the wallabee APIs. You can request a key
         <a href="http://wallab.ee/developers/keys">here</a>.
-        Add your key to the 'api_keys.json' file in order to enable the REST api to work.
+        Add your key to the 'api_keys' file in order to enable the REST api to work.
         [<a href="apis/source?file=webpages/wallabee.html">view source</a>]
         <pre class="snippet"><code>apis/wallabee/users/:user_id/find_lower</code></pre>
       </p>
