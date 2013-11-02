@@ -10,16 +10,9 @@
 
     <script>
       function format(item) {
-        var nx = " --- <b>X</b>";
-        if (item.nx_number && item.nx_number >= 1000) {
-          nx = " --- <b>[" + item.nx_number + " $" + item.nx_cost + "]</b>";
-        } else if (item.nx_number) {
-          nx = "";
-        }
         return '<img src="' + item.image_url + '"/> '
           + item.name + " (" + item.cur_number + " -> " 
-          + item.number + ") $" + item.cost 
-          + nx + "<br/>";
+          + item.number + ") $" + item.cost + "<br/>";
       }
       function showItems(items) {
         var output = '';    

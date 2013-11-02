@@ -88,20 +88,13 @@ findLower = function(request, reply) {
               itemType = obj[key].item_type_id;
               var num = parseInt(obj[key].number);
               var cost = parseInt(obj[key].cost);
-              if (!items[itemType]) {
-                items[itemType] = { "number": num, "cost": cost };
-              } else if (num < items[itemType].number) {
-                var n = items[itemType].number;
-                var c = items[itemType].cost;
-                items[itemType].number = num;
-                items[itemType].cost = cost;
-                num = n;
-                cost = c;
-              }
-              if (num > items[itemType].number
-                  && (!items[itemType].nx_number || num < items[itemType].nx_number)) {
-                items[itemType].nx_number = num;
-                items[itemType].nx_cost = cost;
+              if (cost <= 1000) {
+                if (!items[itemType]) {
+                  items[itemType] = { "number": num, "cost": cost };
+                } else if (num < items[itemType].number) {
+                  items[itemType].number = num;
+                  items[itemType].cost = cost;
+                }
               }
             }
             resolve(items);
