@@ -88,7 +88,7 @@ findLower = function(request, reply) {
               itemType = obj[key].item_type_id;
               var num = parseInt(obj[key].number);
               var cost = parseInt(obj[key].cost);
-              if (cost <= 1000) {
+              if (cost <= 2000) {
                 if (!items[itemType]) {
                   items[itemType] = { "number": num, "cost": cost };
                 } else if (num < items[itemType].number) {
