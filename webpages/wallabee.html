@@ -25,8 +25,14 @@
         output += "<hr/>";
         // Show items < 1000
         for (var key in items) {
-          if (items[key].cur_number < 1000) {
-            output += format(items[key]);
+          var item = items[key];
+          if (item.cur_number < 1000 && item.cost <= 3000) {
+              output += format(item);
+            if (item.number < 200 || item.cost <= 750
+                || (item.number < 300 && item.cost <= 2000)
+                || (item.number < 400 && item.cost <= 1000)) {
+              output += format(item);
+            }
           }
         }
         document.getElementById('results').innerHTML = output;
