@@ -29,9 +29,12 @@
           if (item.cur_number < 1000 && item.cost <= 3000) {
             if (item.number < 200 || item.cost <= 750
                 || (item.number < 300 && item.cost <= 2000)
-                || (item.number < 400 && item.cost <= 1000)) {
+                || (item.number < 400 && item.cost <= 1500)) {
               output += format(item);
             }
+          } else if (item.cur_number < 1000 && item.cur_number > 800 
+                && item.number < 200 && item.cost <= 5000) {
+            output += format(item);
           }
         }
         document.getElementById('results').innerHTML = output;
