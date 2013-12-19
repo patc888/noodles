@@ -26,7 +26,9 @@
         // Show items < 1000
         for (var key in items) {
           var item = items[key];
-          if (item.cur_number < 1000 && item.cost <= 3000) {
+          if (item.cur_number > 500 && item.number < 200) {
+            output += format(item);
+          } else if (item.cur_number < 1000 && item.cost <= 4000) {
             if (item.number < 200 || item.cost <= 750
                 || (item.number < 300 && item.cost <= 2000)
                 || (item.number < 400 && item.cost <= 1500)) {
