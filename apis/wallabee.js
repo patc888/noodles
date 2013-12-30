@@ -73,37 +73,44 @@ findLower = function(request, reply) {
       });
     });
 
-    // Retrieves all items in the market.
-    // Resolves a map of item_type_id -> { number, cost } 
-    var marketItemsP = new Y.Promise(function (resolve, reject) {
-      Y.io('http://api.wallab.ee/market', {
-        headers: {
-          'X-WallaBee-API-Key': api_key,
-        },
-        on: { 
-          success: function(tx, r) {
-            var obj = JSON.parse(r.responseText).items;
-            var items = new Object();
-            for (var key in obj) {
-              itemType = obj[key].item_type_id;
-              var num = parseInt(obj[key].number);
-              var cost = parseInt(obj[key].cost);
-              if (cost <= 5000) {
-                if (!items[itemType]) {
-                  items[itemType] = { "number": num, "cost": cost };
-                } else if (num < items[itemType].number) {
-                  items[itemType].number = num;
-                  items[itemType].cost = cost;
+    function q(url) {
+      return new Y.Promise(function (resolve, reject) {
+        Y.io(url, {
+          headers: {
+            'X-WallaBee-API-Key': api_key,
+          },
+          on: { 
+            success: function(tx, r) {
+              var obj = JSON.parse(r.responseText).items;
+              var items = new Object();
+              for (var key in obj) {
+                itemType = obj[key].item_type_id;
+                var num = parseInt(obj[key].number);
+                var cost = parseInt(obj[key].cost);
+                if (cost <= 5000) {
+                  if (!items[itemType]) {
+                    items[itemType] = { "number": num, "cost": cost };
+                  } else if (num < items[itemType].number) {
+                    items[itemType].number = num;
+                    items[itemType].cost = cost;
+                  }
                 }
               }
-            }
-            resolve(items);
-          } 
-        }
+              resolve(items);
+            } 
+          }
+        });
       });
-    });
+    }
 
-    // Retrieves the item type names.
+    var marketItems1P = q('http://api.wallab.ee/market?page=1');
+    var marketItems2P = q('http://api.wallab.ee/market?page=2');
+    var marketItems3P = q('http://api.wallab.ee/market?page=3');
+    var marketItems4P = q('http://api.wallab.ee/market?page=4');
+    var marketItems5P = q('http://api.wallab.ee/market?page=5');
+    //var marketItems6P = q('http://api.wallab.ee/market?page=6');
+    //var marketItems7P = q('http://api.wallab.ee/market?page=7');
+
     // Resolves an array of { item_type_id, number, image_url, name, cur_number }
     // sorted by cost.
     function getItemTypeNamesP(marketItems) {
@@ -145,22 +152,29 @@ findLower = function(request, reply) {
       });
     }
 
-    Y.batch(savedItemsP, marketItemsP).then(function(data) {
+    Y.batch(savedItemsP, marketItems1P, marketItems2P, marketItems3P, 
+            marketItems4P, marketItems5P).then(function(data) {
       var savedItems = data[0];
-      var marketItems = data[1];
+      var lowestItems = new Array();
 
       // For each market item, if number is not smaller, remove it
-      for (var key in marketItems) {
-        var number = savedItems[key];
-        // Add the user's current number
-        marketItems[key].cur_number = number;
-        if (!number || number < marketItems[key].number) {
-          delete marketItems[key];
+      for (var i=1; i<=5; i++) {
+        var page = data[i];
+console.log(page);
+        for (var key in page) {
+          var number = savedItems[key];
+
+          // Only add items with lower numbers
+          if ((!number || page[key].number < number)
+              && (!lowestItems[key] || page[key].number < lowestItems[key].number)) {
+            page[key].cur_number = number;   // Add the user's current number
+            lowestItems[key] = page[key];
+          }
         }
       }
 
       // Get the item type names and then display them
-      getItemTypeNamesP(marketItems).then(function(items) {
+      getItemTypeNamesP(lowestItems).then(function(items) {
         reply.type('application/json');
         reply.json(items);
       });
