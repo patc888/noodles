@@ -96,7 +96,7 @@ findLower = function(request, reply) {
                   }
                 }
               }
-Y.later(1000*Math.random(), null, function() {
+Y.later(2000*Math.random(), null, function() {
               resolve(items);
 }, [], false);
             } 
