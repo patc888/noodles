@@ -96,7 +96,9 @@ findLower = function(request, reply) {
                   }
                 }
               }
+Y.later(1000*Math.random(), null, function() {
               resolve(items);
+}, [], false);
             } 
           }
         });
@@ -108,8 +110,8 @@ findLower = function(request, reply) {
     var marketItems3P = q('http://api.wallab.ee/market?page=3');
     var marketItems4P = q('http://api.wallab.ee/market?page=4');
     var marketItems5P = q('http://api.wallab.ee/market?page=5');
-    //var marketItems6P = q('http://api.wallab.ee/market?page=6');
-    //var marketItems7P = q('http://api.wallab.ee/market?page=7');
+    var marketItems6P = q('http://api.wallab.ee/market?page=6');
+    var marketItems7P = q('http://api.wallab.ee/market?page=7');
 
     // Resolves an array of { item_type_id, number, image_url, name, cur_number }
     // sorted by cost.
@@ -153,14 +155,13 @@ findLower = function(request, reply) {
     }
 
     Y.batch(savedItemsP, marketItems1P, marketItems2P, marketItems3P, 
-            marketItems4P, marketItems5P).then(function(data) {
+            marketItems4P, marketItems5P, marketItems6P, marketItems7P).then(function(data) {
       var savedItems = data[0];
       var lowestItems = new Array();
 
       // For each market item, if number is not smaller, remove it
-      for (var i=1; i<=5; i++) {
+      for (var i=1; i<=7; i++) {
         var page = data[i];
-console.log(page);
         for (var key in page) {
           var number = savedItems[key];
 
