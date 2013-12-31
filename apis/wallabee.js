@@ -96,22 +96,14 @@ findLower = function(request, reply) {
                   }
                 }
               }
-Y.later(2000*Math.random(), null, function() {
+              //Y.later(2000*Math.random(), null, function() {
               resolve(items);
-}, [], false);
+              //}, [], false);
             } 
           }
         });
       });
     }
-
-    var marketItems1P = q('http://api.wallab.ee/market?page=1');
-    var marketItems2P = q('http://api.wallab.ee/market?page=2');
-    var marketItems3P = q('http://api.wallab.ee/market?page=3');
-    var marketItems4P = q('http://api.wallab.ee/market?page=4');
-    var marketItems5P = q('http://api.wallab.ee/market?page=5');
-    var marketItems6P = q('http://api.wallab.ee/market?page=6');
-    var marketItems7P = q('http://api.wallab.ee/market?page=7');
 
     // Resolves an array of { item_type_id, number, image_url, name, cur_number }
     // sorted by cost.
@@ -154,13 +146,19 @@ Y.later(2000*Math.random(), null, function() {
       });
     }
 
-    Y.batch(savedItemsP, marketItems1P, marketItems2P, marketItems3P, 
-            marketItems4P, marketItems5P, marketItems6P, marketItems7P).then(function(data) {
+    var numPages = 3;
+    var marketItemsP = new Array();
+    for (var i=1; i<=numPages; i++) {
+      marketItemsP.push(q('http://api.wallab.ee/market?page='+i));
+    }
+
+    Y.batch(savedItemsP, marketItemsP[0], marketItemsP[1], marketItemsP[2], 
+            marketItemsP[3], marketItemsP[4], marketItemsP[5], marketItemsP[6]).then(function(data) {
       var savedItems = data[0];
       var lowestItems = new Array();
 
       // For each market item, if number is not smaller, remove it
-      for (var i=1; i<=7; i++) {
+      for (var i=1; i<=numPages; i++) {
         var page = data[i];
         for (var key in page) {
           var number = savedItems[key];
