@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.3.0/pure-min.css"/>
+    <link rel="stylesheet" href="http://purecss.io/combo/1.6.3?/css/main.css&/css/grids.css&/css/rainbow/baby-blue.css"/>
+    <link rel="stylesheet" href="index.css"/>
+    <script src="http://yui.yahooapis.com/3.13.0/build/yui/yui-min.js"></script>
+
+    <script>
+      navigator.geolocation.watchPosition(function (position) {
+        YUI().use('yql', function(Y) {
+          Y.YQL('select * from geo.placefinder where lat=" + position.coords.latitude
+            + " and lon=" + position.coords.longitude);
+        });
+        document.getElementById("results_lat").innerHTML = position.coords.latitude;
+        document.getElementById("results_lon").innerHTML = position.coords.longitude;
+        var container = document.getElementById('results');
+        if (data.results) {
+          var place = data.results.place[0];
+          var name      = place.name || 'Unknown';
+          var country   = place.country.content || place[0].country.content || 'Unknown';
+          var latitude  = place.centroid.latitude || 'Unknown';
+          var longitude = place.centroid.longitude || 'Unknown';
+          var city      = place.locality1 ? place.locality1.content : 'Unknown';
+          var state     = place.admin1 ? place.admin1.content : 'Unknown';
+          var county    = place.admin2 ? place.admin2.content : 'Unknown';
+          var zip       = place.postal ? place.postal.content : 'Unknown';
+
+          content = '<ul><li><strong>Place Name: </strong>' + name + '</li>'+
+          '<li><strong>City/Town: </strong>' + city + '</li>' +
+          '<li><strong>County/District: </strong>' + county + '</li>' +
+          '<li><strong>State/Province: </strong>' + state + '</li>' +
+          '<li><strong>Zipcode: </strong>' + zip + '</li>' +
+          '<li><strong>Country: </strong>' + country + '</li>' +
+          '<li><strong>Latitude: </strong>' + latitude + '</li>' +
+          '<li><strong>Longitude: </strong>' + longitude + '</li></ul>';
+          container.innerHTML = content;
+        } else {
+          container.innerHTML = 'No results';
+        }
+      }
+
+      <!-- Called when the user clicks on the Submit button -->
+      function onSubmit(e) {
+        e.preventDefault(); // do not send form 
+        var location = document.getElementById('query').value;
+        var content = '';
+
+        <!-- Call a REST api -->
+        YUI().use('io', 'json-parse', function(Y) {
+          Y.io('apis/geoplace/' + encodeURIComponent(location), {
+            on: { 
+              success: function(tx, reply) {
+                showLocation(Y.JSON.parse(reply.responseText));
+              } 
+            }
+          });
+        });
+      }
+    </script>
+  </head>
+
+  <body>
+    <div class="header">
+      <h1>geoplace</h1>
+    </div>
+    <div class="content">
+      <p>
+        This example takes a name of a location (e.g. San Francisco or SFO) and shows details about that location.
+        The code uses YUI to call the following REST api to get the location information.
+        [<a href="apis/source?file=webpages/rest.html">view source</a>]
+        <pre class="snippet"><code>apis/geoplace/:location</code>
+[<a href="apis/geoplace/Palo+Alto">view sample results</a>]</pre>
+      </p>
+
+      <form id="form">
+        <p>
+          <label for="query">Location:</label>
+          <input id="query" type="text" value="palo alto"/>
+          <input type="submit" value="Show"/>
+        </p>
+      </form>
+
+      <div id="results"></div>
+    </div>
+
+    <script>
+      // Create an event handler for submitting the form
+      var form = document.getElementById('form');
+      form.addEventListener('submit',onSubmit,false);
+    </script>
+  </body>
+</html>

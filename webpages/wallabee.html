@@ -16,9 +16,12 @@
       }
       function showItems(items) {
         var output = '';    
-        // Show items >= 1000
+
+        // Show items >= 1000 or rare
         for (var key in items) {
           if (items[key].cur_number >= 1000 && items[key].number < 1000) {
+            output += format(items[key]);
+          } else if (items[key].rare == 1) {
             output += format(items[key]);
           }
         }
