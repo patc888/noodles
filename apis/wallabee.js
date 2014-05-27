@@ -96,9 +96,9 @@ findLower = function(request, reply) {
                   }
                 }
               }
-              //Y.later(2000*Math.random(), null, function() {
-              resolve(items);
-              //}, [], false);
+              Y.later(1000*Math.random(), null, function() {
+                resolve(items);
+              }, [], false);
             } 
           }
         });
@@ -146,16 +146,17 @@ findLower = function(request, reply) {
       });
     }
 
-    var numPages = 3;
+    var numPages = 5;
     var marketItemsP = new Array();
     for (var i=1; i<=numPages; i++) {
       marketItemsP.push(q('http://api.wallab.ee/market?page='+i));
     }
 
     Y.batch(savedItemsP, marketItemsP[0], marketItemsP[1], marketItemsP[2], 
-            marketItemsP[3], marketItemsP[4], marketItemsP[5], marketItemsP[6]).then(function(data) {
+            marketItemsP[3], marketItemsP[4]).then(function(data) {
       var savedItems = data[0];
       var lowestItems = new Array();
+      var rarekeys = [171,931,707,324,111,1094,997,319,822,1115,938,516,343,804,105,1051,312,33,1017,74,390,768,248,981,136,108,41,259,897,26,858,116,458,830,201,1132,1018,772,928,8,114,407,1352,427,585,1019,781,23,42,785,241,109,64,425,426,83,654,18,609,1131,97,318,612,817,151,1336,606,824,748,166, 393,528,677,309,1052,525,62,651,95,993,333,1039,679,518,770,1023,630,1191,161,138,336,689,1022,529,1208,150,61,551,283,10,160,168,172,823,72,828,162,289,330,75,69,130,227,932,275,5,917,482,137,922,738,334,465,238,480,584,337,576,483,332,4,350,810,937,744,929,222,920,610,421,463,129,924,190,859,344,646,730,127,736,189,441,132,826,349,579,729,157,733,862,934,327,575,77,735,835,49,614,724,732,765,762,921,418,447,38,574,706,631,857,769,496,148,440,388,454,155,1034,466,611,358,276,973,65,573,623,154,926,581,87];
 
       // For each market item, if number is not smaller, remove it
       for (var i=1; i<=numPages; i++) {
@@ -168,6 +169,14 @@ findLower = function(request, reply) {
               && (!lowestItems[key] || page[key].number < lowestItems[key].number)) {
             page[key].cur_number = number;   // Add the user's current number
             lowestItems[key] = page[key];
+          }
+
+          // Add the rare items
+          for (var j=0; j<rarekeys.length; j++) {
+            if (key == rarekeys[j] && page[key].number < 1000) {
+              page[key].cur_number = number;   // Add the user's current number
+              lowestItems[key] = page[key];
+            }
           }
         }
       }

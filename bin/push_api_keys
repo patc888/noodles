@@ -1,4 +1,5 @@
 #!/bin/bash
+# Push api keys into heroku config system
 
 # Get location of script
 CMDDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
