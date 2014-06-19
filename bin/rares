@@ -1,0 +1,23 @@
+#!/bin/bash
+
+echo "1"
+curl -s "http://itembrowser.com/rarebee.php?page=0&view=" | perl -ne 'if(m/id=(\d+)">/){ print $1 . ","; }'
+echo
+
+echo "2"
+curl -s "http://itembrowser.com/rarebee.php?page=1&view=" | perl -ne 'if(m/id=(\d+)">/){ print $1 . ","; }'
+echo
+
+echo "3"
+curl -s "http://itembrowser.com/rarebee.php?page=2&view=" | perl -ne 'if(m/id=(\d+)">/){ print $1 . ","; }'
+echo
+
+echo "4"
+curl -s "http://itembrowser.com/rarebee.php?page=3&view=" | perl -ne 'if(m/id=(\d+)">/){ print $1 . ","; }'
+echo
+
+echo "5"
+curl -s "http://itembrowser.com/rarebee.php?page=4&view=" | perl -ne 'if(m/id=(\d+)">/){ print $1 . ","; }'
+echo
+
+

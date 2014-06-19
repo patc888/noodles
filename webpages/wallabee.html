@@ -10,7 +10,8 @@
 
     <script>
       function format(item) {
-        return '<a href="http://itembrowser.com/item.php?id=' + item.item_type_id 
+        return item.rare 
+          + ': <a href="http://itembrowser.com/item.php?id=' + item.item_type_id 
           + '"><img src="' + item.image_url + '"/></a> '
           + item.name + " (" + item.cur_number + " -> " 
           + item.number + ") $" + item.cost + "<br/>";
@@ -22,11 +23,13 @@
         for (var key in items) {
           if (items[key].cur_number >= 1000 && items[key].number < 1000) {
             output += format(items[key]);
-          } else if (items[key].rare == 1) {
+          } else if (items[key].rare >= 1 && items[key].rare <= 2) {
             output += format(items[key]);
-          } else if (items[key].rare == 3 && items[key].cost <= 4000) {
+          } else if (items[key].rare == 3 && items[key].cost <= 4500) {
             output += format(items[key]);
-          } else if (items[key].rare >= 4 && items[key].cost <= 3000) {
+          } else if (items[key].rare == 4 && items[key].cost <= 3500) {
+            output += format(items[key]);
+          } else if (items[key].rare >= 5 && items[key].cost <= 1000) {
             output += format(items[key]);
           }
         }
@@ -36,7 +39,7 @@
           var item = items[key];
           if (item.cur_number > 500 && item.number < 200) {
             output += format(item);
-          } else if (item.cur_number < 1000 && item.cost <= 4000) {
+          } else if (item.cur_number < 1000 && item.cost <= 4000 && item.rare == 0) {
             if (item.number < 200 || item.cost <= 1000
                 || (item.number < 300 && item.cost <= 3000)
                 || (item.number < 400 && item.cost <= 2000)) {
