@@ -24,7 +24,7 @@
             output += format(items[key]);
           } else if (items[key].rare == 1) {
             output += format(items[key]);
-          } else if (items[key].rare == 3 && items[key].cost <= 3000) {
+          } else if (items[key].rare >= 3 && items[key].cost <= 5000) {
             output += format(items[key]);
           }
         }
