@@ -10,7 +10,8 @@
 
     <script>
       function format(item) {
-        return '<img src="' + item.image_url + '"/> '
+        return '<a href="http://itembrowser.com/item.php?id=' + item.item_type_id 
+          + '"><img src="' + item.image_url + '"/></a> '
           + item.name + " (" + item.cur_number + " -> " 
           + item.number + ") $" + item.cost + "<br/>";
       }
