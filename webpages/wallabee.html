@@ -21,16 +21,17 @@
 
         // Show items >= 1000 or rare
         for (var key in items) {
-          if (items[key].cur_number >= 1000 && items[key].number < 1000) {
-            output += format(items[key]);
-          } else if (items[key].rare >= 1 && items[key].rare <= 2) {
-            output += format(items[key]);
-          } else if (items[key].rare == 3 && items[key].cost <= 4500) {
-            output += format(items[key]);
-          } else if (items[key].rare == 4 && items[key].cost <= 3500) {
-            output += format(items[key]);
-          } else if (items[key].rare >= 5 && items[key].cost <= 1000) {
-            output += format(items[key]);
+          var item = items[key];
+          if (item.cur_number >= 1000 && item.number < 1000) {
+            output += format(item);
+          } else if (item.rare >= 1 && item.rare <= 2) {
+            output += format(item);
+          } else if (item.rare == 3 && item.cost <= 5000) {
+            output += format(item);
+          } else if (item.rare == 4 && item.cost <= 4000) {
+            output += format(item);
+          } else if (item.rare >= 5 && item.cost <= 3000) {
+            output += format(item);
           }
         }
         output += "<hr/>";
