@@ -46,8 +46,8 @@
                 || (item.number < 400 && item.cost <= 2000)) {
               output += format(item);
             }
-          } else if (item.cur_number < 1000 && item.cur_number > 800 
-                && item.number < 200 && item.cost <= 5000) {
+          } else if (item.cur_number < 1000 && item.cur_number-item.number >= 100 
+                && item.cost <= 5000) {
             output += format(item);
           }
         }
