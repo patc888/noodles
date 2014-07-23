@@ -236,6 +236,13 @@ findLower = function(request, reply) {
               page[key].cur_number = number;   // Add the user's current number
               lowestItems[key] = page[key];
           }
+
+          // 4D bandits
+          if (key == 289 && page[key].number < 10000) {
+            page[key].rare = 1;              // Mark as not rare
+            page[key].cur_number = number;   // Add the user's current number
+            lowestItems[key] = page[key];
+          }
         }
       }
 
