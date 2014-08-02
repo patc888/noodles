@@ -13,7 +13,7 @@
         var delta = item.cur_number > item.number ? " = " + (item.number - item.cur_number) : "";
         return item.rare 
           + ': <a href="http://itembrowser.com/item.php?id=' + item.item_type_id 
-          + '"><img src="' + item.image_url + '"/></a> '
+          + '"><img src="http://api.wallab.ee/image/item-' + item.item_type_id + '-50.png"/></a> '
           + item.name + " (" + item.cur_number + " -> " 
           + item.number + delta + ") $" + item.cost + "<br/>";
       }
@@ -23,7 +23,7 @@
         // Show items >= 1000 or rare
         for (var key in items) {
           var item = items[key];
-          if (item.rare < 200) {
+          if (item.rare < 2000) {
             // Ignore costs for these items
             output += format(item);
           } else if (item.rare < 300 && item.cost <= 5000) {

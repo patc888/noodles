@@ -55,7 +55,6 @@ findLower = function(request, reply) {
   YUI().use('io-base', 'json-parse', 'promise', function(Y) {
     // Retrieve's the user's saved items.
     // Resolves a map of item_type_id -> number.
-console.log("b1");
     var savedItemsP = new Y.Promise(function (resolve, reject) {
       Y.io('http://api.wallab.ee/users/' + userId + '/saveditems', {
         headers: {
@@ -63,7 +62,6 @@ console.log("b1");
         },
         on: {
           success: function(tx, r) {
-console.log("b2");
             var obj = JSON.parse(r.responseText).saveditems;
             var items = new Object();
             for (var key in obj) {
@@ -76,7 +74,6 @@ console.log("b2");
     });
 
     function q(url) {
-console.log("c1");
       return new Y.Promise(function (resolve, reject) {
         Y.io(url, {
           headers: {
@@ -84,7 +81,6 @@ console.log("c1");
           },
           on: { 
             success: function(tx, r) {
-console.log("c2");
               var obj = JSON.parse(r.responseText).items;
               var items = new Object();
               for (var key in obj) {
@@ -109,31 +105,42 @@ console.log("c2");
       });
     }
 
-    // Resolves an array of { item_type_id, number, image_url, name, cur_number, rare }
+    // Resolves an array of { item_type_id, number, name, cur_number, rare }
     // sorted by cost.
     function getItemTypeNamesP(marketItems) {
-console.log("a0");
       var ids = new Array();
       for (var key in marketItems) {
-        ids.push(key);
+        if (!marketItems[key].name) {
+          ids.push(key);
+        }
       }
-console.log("a1");
-      return new Y.Promise(function (resolve, reject) {
+      new Y.Promise(function (resolve, reject) {
+console.log("a");
+        if (ids) {
+console.log("b");
+          var items = new Array();
+          for (var key in marketItems) {
+            items.push(marketItems[key]);
+          }
+          resolve(items);
+          return;
+        }
+
         Y.io('http://api.wallab.ee/itemtypes/'+ids.join(), {
           headers: {
             'X-WallaBee-API-Key': api_key,
           },
           on: { 
             success: function(tx, r) {
-console.log("a2");
-              var items = new Array();
               var obj = JSON.parse(r.responseText);
               for (var key in obj) {
                 var itemTypeId = obj[key].item_type_id;
                 marketItems[itemTypeId].name = obj[key].name;
-                marketItems[itemTypeId].image_url = obj[key].image_url_50;
-                marketItems[itemTypeId].item_type_id = itemTypeId;
-                items.push(marketItems[itemTypeId]);
+              }
+
+              var items = new Array();
+              for (var key in marketItems) {
+                items.push(marketItems[key]);
               }
 
               // Sort the items by cost
@@ -150,6 +157,7 @@ console.log("a2");
                 // The greater gain should be first
                 return a.number - b.number;
               });
+
               resolve(items);
             }
           }
@@ -162,34 +170,35 @@ console.log("a2");
     for (var i=1; i<=numPages; i++) {
       marketItemsP.push(q('http://api.wallab.ee/market?page='+i));
     }
-console.log("1");
     var raresMap = getRaresMap();
-console.log("2");
 
     Y.batch(savedItemsP, marketItemsP[0], marketItemsP[1], marketItemsP[2], 
             marketItemsP[3], marketItemsP[4]).then(function(data) {
       var savedItems = data[0];
-      var lowestItems = new Array();
+      var pickedItems = {};
 
       // For each market item, if number is not smaller, remove it
       for (var i=1; i<=numPages; i++) {
-console.log("3");
         var page = data[i];
         for (var key in page) {
-          var number = savedItems[key];
+          var savedNumber = savedItems[key];
 
           if (page[key].number < 1000 && raresMap[key]) {
-            page[key].rare = raresMap[key];
-            page[key].cur_number = number;   // Add the user's current number
-            lowestItems[key] = page[key];
+            page[key].rare = raresMap[key][1];
+            page[key].item_type_id = key;
+            page[key].name = raresMap[key][2];
+            page[key].cur_number = savedNumber;   // Add the user's saved number
+            pickedItems[key] = page[key];
           }
 
           // Add items with lower numbers
-          if ((!number || page[key].number < number)
-              && (!lowestItems[key] || page[key].number < lowestItems[key].number)) {
+          if ((!savedNumber || page[key].number < savedNumber)
+              && (!pickedItems[key] || page[key].number < pickedItems[key].number)) {
             page[key].rare = 1000;              // Mark as not rare
-            page[key].cur_number = number;   // Add the user's current number
-            lowestItems[key] = page[key];
+            page[key].item_type_id = key;
+            page[key].name = raresMap[key] ? raresMap[key][2] : null;
+            page[key].cur_number = savedNumber; // Add the user's saved number
+            pickedItems[key] = page[key];
           }
 
           // Cheap
@@ -198,16 +207,20 @@ console.log("3");
              || page[key].number < 250 && page[key].cost <= 1000
              || page[key].number < 200 && page[key].cost <= 2000) {
               page[key].rare = 1100;              // Mark as rare
-              page[key].cur_number = number;   // Add the user's current number
-              lowestItems[key] = page[key];
+              page[key].item_type_id = key;
+              page[key].name = raresMap[key][2];
+              page[key].cur_number = savedNumber; // Add the user's saved number
+              pickedItems[key] = page[key];
           }
         }
       }
-console.log("4");
+        reply.type('application/json');
+        reply.json(pickedItems);
+return;
 
-      // Get the item type names and then display them
-      getItemTypeNamesP(lowestItems).then(function(items) {
-console.log("5");
+      // Get unknown names and then display them
+      getItemTypeNamesP(pickedItems).then(function(items) {
+console.log(items);
         reply.type('application/json');
         reply.json(items);
       });
@@ -231,7 +244,8 @@ function getRaresMap() {
   var lines = require('fs').readFileSync(__dirname+'/wallabee_rares.dat').toString().split(/\r?\n/);
   for (var i in lines) {
     var parts = lines[i].split(/\|/);
-    map[parts[0]] = parts[1];
+    parts[1] = parseInt(parts[1]);
+    map[parts[0]] = parts;
   }
   return map;
 }

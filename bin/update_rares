@@ -4,7 +4,7 @@ cat /dev/null > ./apis/wallabee_rares.dat
 for i in {0..5}
 do
   echo $i
-  curl -s "http://itembrowser.com/rarebee.php?page=$i&view=" | perl -ne 'if(m/id=(\d+)".*Detail">(\d+)\. (.+)<\/a>/){ print "$1|$2\n"; }' >> ./apis/wallabee_rares.dat
+  curl -s "http://itembrowser.com/rarebee.php?page=$i&view=" | perl -ne 'if(m/id=(\d+)".*Detail">(\d+)\. (.+)<\/a>/){ print "$1|$2|$3\n"; }' >> ./apis/wallabee_rares.dat
 done
 
 #for i in {0..5}
