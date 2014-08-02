@@ -150,7 +150,7 @@ findLower = function(request, reply) {
       });
     }
 
-    var numPages = 1;
+    var numPages = 4;
     var marketItemsP = new Array();
     for (var i=1; i<=numPages; i++) {
       marketItemsP.push(q('http://api.wallab.ee/market?page='+i));
