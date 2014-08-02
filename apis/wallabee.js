@@ -55,6 +55,7 @@ findLower = function(request, reply) {
   YUI().use('io-base', 'json-parse', 'promise', function(Y) {
     // Retrieve's the user's saved items.
     // Resolves a map of item_type_id -> number.
+console.log("b1");
     var savedItemsP = new Y.Promise(function (resolve, reject) {
       Y.io('http://api.wallab.ee/users/' + userId + '/saveditems', {
         headers: {
@@ -62,6 +63,7 @@ findLower = function(request, reply) {
         },
         on: {
           success: function(tx, r) {
+console.log("b2");
             var obj = JSON.parse(r.responseText).saveditems;
             var items = new Object();
             for (var key in obj) {
@@ -74,6 +76,7 @@ findLower = function(request, reply) {
     });
 
     function q(url) {
+console.log("c1");
       return new Y.Promise(function (resolve, reject) {
         Y.io(url, {
           headers: {
@@ -81,6 +84,7 @@ findLower = function(request, reply) {
           },
           on: { 
             success: function(tx, r) {
+console.log("c2");
               var obj = JSON.parse(r.responseText).items;
               var items = new Object();
               for (var key in obj) {
@@ -108,10 +112,12 @@ findLower = function(request, reply) {
     // Resolves an array of { item_type_id, number, image_url, name, cur_number, rare }
     // sorted by cost.
     function getItemTypeNamesP(marketItems) {
+console.log("a0");
       var ids = new Array();
       for (var key in marketItems) {
         ids.push(key);
       }
+console.log("a1");
       return new Y.Promise(function (resolve, reject) {
         Y.io('http://api.wallab.ee/itemtypes/'+ids.join(), {
           headers: {
@@ -119,6 +125,7 @@ findLower = function(request, reply) {
           },
           on: { 
             success: function(tx, r) {
+console.log("a2");
               var items = new Array();
               var obj = JSON.parse(r.responseText);
               for (var key in obj) {
@@ -155,7 +162,9 @@ findLower = function(request, reply) {
     for (var i=1; i<=numPages; i++) {
       marketItemsP.push(q('http://api.wallab.ee/market?page='+i));
     }
+console.log("1");
     var raresMap = getRaresMap();
+console.log("2");
 
     Y.batch(savedItemsP, marketItemsP[0], marketItemsP[1], marketItemsP[2], 
             marketItemsP[3], marketItemsP[4]).then(function(data) {
@@ -164,6 +173,7 @@ findLower = function(request, reply) {
 
       // For each market item, if number is not smaller, remove it
       for (var i=1; i<=numPages; i++) {
+console.log("3");
         var page = data[i];
         for (var key in page) {
           var number = savedItems[key];
@@ -193,9 +203,11 @@ findLower = function(request, reply) {
           }
         }
       }
+console.log("4");
 
       // Get the item type names and then display them
       getItemTypeNamesP(lowestItems).then(function(items) {
+console.log("5");
         reply.type('application/json');
         reply.json(items);
       });
