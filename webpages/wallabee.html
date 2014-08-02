@@ -23,7 +23,7 @@
         // Show items >= 1000 or rare
         for (var key in items) {
           var item = items[key];
-          if (item.rare < 2000) {
+          if (item.rare < 200) {
             // Ignore costs for these items
             output += format(item);
           } else if (item.rare < 300 && item.cost <= 5000) {
