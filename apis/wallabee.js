@@ -56,12 +56,14 @@ findLower = function(request, reply) {
     // Retrieve's the user's saved items.
     // Resolves a map of item_type_id -> number.
     var savedItemsP = new Y.Promise(function (resolve, reject) {
+      console.log("getting user's saved items");
       Y.io('http://api.wallab.ee/users/' + userId + '/saveditems', {
         headers: {
           'X-WallaBee-API-Key': api_key,
         },
         on: {
           success: function(tx, r) {
+            console.log("got user's saved items");
             var obj = JSON.parse(r.responseText).saveditems;
             var items = new Object();
             for (var key in obj) {
@@ -75,12 +77,14 @@ findLower = function(request, reply) {
 
     function q(url) {
       return new Y.Promise(function (resolve, reject) {
+        console.log("getting market:" + url);
         Y.io(url, {
           headers: {
             'X-WallaBee-API-Key': api_key,
           },
           on: { 
             success: function(tx, r) {
+              console.log("got market:" + url);
               var obj = JSON.parse(r.responseText).items;
               var items = new Object();
               for (var key in obj) {
@@ -114,24 +118,14 @@ findLower = function(request, reply) {
           ids.push(key);
         }
       }
-      new Y.Promise(function (resolve, reject) {
-console.log("a");
-        if (ids) {
-console.log("b");
-          var items = new Array();
-          for (var key in marketItems) {
-            items.push(marketItems[key]);
-          }
-          resolve(items);
-          return;
-        }
-
+      return new Y.Promise(function (resolve, reject) {
         Y.io('http://api.wallab.ee/itemtypes/'+ids.join(), {
           headers: {
             'X-WallaBee-API-Key': api_key,
           },
           on: { 
             success: function(tx, r) {
+              console.log("got unknown names");
               var obj = JSON.parse(r.responseText);
               for (var key in obj) {
                 var itemTypeId = obj[key].item_type_id;
@@ -157,7 +151,6 @@ console.log("b");
                 // The greater gain should be first
                 return a.number - b.number;
               });
-
               resolve(items);
             }
           }
@@ -214,13 +207,15 @@ console.log("b");
           }
         }
       }
+/*
         reply.type('application/json');
         reply.json(pickedItems);
 return;
+*/
 
       // Get unknown names and then display them
+      console.log("getting unknown names");
       getItemTypeNamesP(pickedItems).then(function(items) {
-console.log(items);
         reply.type('application/json');
         reply.json(items);
       });
@@ -239,6 +234,7 @@ function getApiKey(name) {
   return process.env['API_KEY_'+name];
 }
 
+// File format: item_type_id | rarity | name
 function getRaresMap() {
   var map = {};
   var lines = require('fs').readFileSync(__dirname+'/wallabee_rares.dat').toString().split(/\r?\n/);
