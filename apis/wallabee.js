@@ -111,11 +111,17 @@ findRares = function(request, reply) {
              || page[key].number < 250 && page[key].cost <= 1000
              || page[key].number < 200 && page[key].cost <= 2000) {
               // Cheap
-              page[key].item_type_id = key;
-              page[key].rare = 1000;
-              page[key].name = raresMap[key][2];
-              page[key].cur_number = 0;
-              pickedItems[key] = page[key];
+            page[key].item_type_id = key;
+            page[key].rare = 1000;
+            page[key].name = raresMap[key][2];
+            page[key].cur_number = 0;
+            pickedItems[key] = page[key];
+          } else if (key == 1191) {
+            page[key].item_type_id = key;
+            page[key].rare = 200;
+            page[key].name = raresMap[key][2];
+            page[key].cur_number = 0;
+            pickedItems[key] = page[key];
           }
         }
       }
