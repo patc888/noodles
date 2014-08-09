@@ -85,7 +85,7 @@ findRares = function(request, reply) {
       });
     }
 
-    var numPages = 3;
+    var numPages = 1;
     var marketItemsP = new Array();
     for (var i=1; i<=numPages; i++) {
       marketItemsP.push(q('http://api.wallab.ee/market?page='+i));
@@ -109,14 +109,15 @@ findRares = function(request, reply) {
           } else if (page[key].number < 1000 && page[key].cost <= 300
              || page[key].number < 500 && page[key].cost <= 500
              || page[key].number < 250 && page[key].cost <= 1000
-             || page[key].number < 200 && page[key].cost <= 2000) {
+             || page[key].number < 200 && page[key].cost <= 2000
+             || page[key].number < 100 && page[key].cost <= 15000) {
               // Cheap
             page[key].item_type_id = key;
             page[key].rare = 1000;
             page[key].name = raresMap[key][2];
             page[key].cur_number = 0;
             pickedItems[key] = page[key];
-          } else if (key == 1191) {
+          } else if (key == 1191 && page[key].cost <= 500) { // invisibility
             page[key].item_type_id = key;
             page[key].rare = 200;
             page[key].name = raresMap[key][2];
