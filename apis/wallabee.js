@@ -79,7 +79,7 @@ findRares = function(request, reply) {
                 }
               }
               resolve(items);
-            } 
+            }
           }
         });
       });
@@ -95,6 +95,7 @@ findRares = function(request, reply) {
     Y.batch(marketItemsP[0], marketItemsP[1], marketItemsP[2], 
             marketItemsP[3], marketItemsP[4]).then(function(data) {
       var pickedItems = {};
+      console.log("get market items");
 
       // For each market item, if number is not smaller, remove it
       for (var i=0; i<numPages; i++) {
@@ -114,12 +115,12 @@ findRares = function(request, reply) {
               // Cheap
             page[key].item_type_id = key;
             page[key].rare = 1000;
-            page[key].name = raresMap[key][2];
+            page[key].name = raresMap[key] ? raresMap[key][2] : "unknown";
             page[key].cur_number = 0;
             pickedItems[key] = page[key];
           } else if (key == 1191 && page[key].cost <= 500) { // invisibility
             page[key].item_type_id = key;
-            page[key].rare = 200;
+            page[key].rare = raresMap[key][1];
             page[key].name = raresMap[key][2];
             page[key].cur_number = 0;
             pickedItems[key] = page[key];
