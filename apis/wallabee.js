@@ -118,7 +118,7 @@ findRares = function(request, reply) {
             page[key].name = raresMap[key] ? raresMap[key][2] : "unknown";
             page[key].cur_number = 0;
             pickedItems[key] = page[key];
-          } else if (key == 1191 && page[key].cost <= 500) { // invisibility
+          } else if (key == 1191 && page[key].cost <= 250) { // invisibility
             page[key].item_type_id = key;
             page[key].rare = raresMap[key][1];
             page[key].name = raresMap[key][2];
